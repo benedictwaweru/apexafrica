@@ -1,0 +1,71 @@
+{
+  "name": "web-admin",
+  "root": "web/admin",
+  "sourceRoot": "web/admin/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/web/admin",
+        "configFile": "web/admin/vite.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "buildTarget": "web-admin:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "web-admin:build:development"
+        },
+        "production": {
+          "buildTarget": "web-admin:build:production",
+          "hmr": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": { "lintFilePatterns": ["web/admin/**/*.{ts,tsx}"] }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": { "configFile": "web/admin/vite.config.ts" }
+    },
+
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "web/admin/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": [
+          "apexafrica/admin-webclient:latest"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": [
+            "apexafrica.azurecr.io/admin-webclient:latest"
+          ],
+          "push": true
+        }
+      }
+    }
+  }
+}

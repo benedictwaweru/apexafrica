@@ -1,0 +1,79 @@
+{
+  "name": "logistics",
+  "root": "apps/logistics",
+  "sourceRoot": "apps/logistics/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "swc",
+        "outputPath": "dist/apps/logistics",
+        "main": "apps/logistics/src/main.ts",
+        "tsConfig": "apps/logistics/tsconfig.app.json",
+        "webpackConfig": "apps/logistics/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "watch": true,
+          "sourceMap": true
+        },
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "logistics:build",
+        "watch": true,
+        "inspect": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "logistics:build:development"
+        },
+        "production": {
+          "buildTarget": "logistics:build:production",
+          "watch": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": { "lintFilePatterns": ["apps/logistics/**/*.ts"] }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": { "jestConfig": "apps/logistics/jest.config.ts" }
+    },
+
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "apps/logistics/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": [
+          "apexafrica/logistics-service:latest"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": [
+            "apexafrica.azurecr.io/logistics-service:latest"
+          ],
+          "push": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "web-logistics",
+  "root": "web/logistics",
+  "sourceRoot": "web/logistics/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/web/logistics",
+        "configFile": "web/logistics/vite.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "buildTarget": "web-logistics:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "web-logistics:build:development"
+        },
+        "production": {
+          "buildTarget": "web-logistics:build:production",
+          "hmr": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": { "lintFilePatterns": ["web/logistics/**/*.{ts,tsx}"] }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": { "configFile": "web/logistics/vite.config.ts" }
+    },
+
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "web/logistics/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": [
+          "apexafrica/logistics-webclient:latest"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": [
+            "apexafrica.azurecr.io/logistics-webclient:latest"
+          ],
+          "push": true
+        }
+      }
+    }
+  }
+}

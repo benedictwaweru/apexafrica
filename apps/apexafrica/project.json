@@ -1,0 +1,79 @@
+{
+  "name": "apexafrica",
+  "root": "apps/apexafrica",
+  "sourceRoot": "apps/apexafrica/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "target": "node",
+        "compiler": "swc",
+        "outputPath": "dist/apps/apexafrica",
+        "main": "apps/apexafrica/src/main.ts",
+        "tsConfig": "apps/apexafrica/tsconfig.app.json",
+        "webpackConfig": "apps/apexafrica/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "watch": true,
+          "sourceMap": true
+        },
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "apexafrica:build",
+        "watch": true,
+        "inspect": false
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "apexafrica:build:development"
+        },
+        "production": {
+          "buildTarget": "apexafrica:build:production",
+          "watch": false
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": { "lintFilePatterns": ["apps/apexafrica/**/*.ts"] }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": { "jestConfig": "apps/apexafrica/jest.config.ts" }
+    },
+
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "apps/apexafrica/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": [
+          "apexafrica/gateway-service:latest"
+        ]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": [
+            "apexafrica.azurecr.io/gateway-service:latest"
+          ],
+          "push": true
+        }
+      }
+    }
+  }
+}

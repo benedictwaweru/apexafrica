@@ -1,0 +1,109 @@
+services:
+  postgres:
+    image: postgres:18.3-bookworm
+    container_name: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./infra/postgresql/init:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+
+  pg-admin:
+    image: dpage/pgadmin4:9.15.0
+    container_name: pg-admin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    volumes:
+      - ./infra/pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak-database:
+        condition: service_healthy
+    restart: unless-stopped
+
+  redis:
+    image: redis:8.6.2-alpine
+    container_name: redis
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass
+      ${REDIS_PASSWORD} --maxmemory ${REDIS_MAXMEMORY}
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_MAXMEMORY: ${REDIS_MAXMEMORY}
+    volumes:
+      - ./infra/redis/config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "$$REDIS_PASSWORD", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+
+  keycloak-database:
+    image: postgres:18.3-bookworm
+    container_name: keycloak-database
+    environment:
+      POSTGRES_USER: ${KC_DB_USERNAME}
+      POSTGRES_PASSWORD: ${KC_DB_PASSWORD}
+      POSTGRES_DB: ${KC_DB_NAME}
+    volumes:
+      - keycloak_postgres_data:/var/lib/postgresql/
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  keycloak:
+    image: apexafrica/keycloak:latest
+    container_name: keycloak
+    command: start --optimized --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+
+      KC_HTTPS_CERTIFICATE_FILE: ${KC_HTTPS_CERTIFICATE_FILE}
+      KC_HTTPS_CERTIFICATE_KEY_FILE: ${KC_HTTPS_CERTIFICATE_KEY_FILE}
+      KC_HTTPS_PORT: ${KC_HTTPS_PORT}
+
+      KC_DB_URL: jdbc:postgresql://keycloak-database:5432/${KC_DB_NAME}
+      KC_DB_USERNAME: ${KC_DB_USERNAME}
+      KC_DB_PASSWORD: ${KC_DB_PASSWORD}
+
+      KC_HOSTNAME: ${KC_HOSTNAME}
+      KC_HOSTNAME_STRICT: ${KC_HOSTNAME_STRICT}
+    ports:
+      - "${KC_HTTPS_PORT}:${KC_HTTPS_PORT}"
+    volumes:
+      - ./certs/keycloak:/opt/keycloak/conf/tls:ro
+    depends_on:
+      keycloak-database:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  pgadmin_data:
+  keycloak_postgres_data:
+
+networks:
+  apexafrica:

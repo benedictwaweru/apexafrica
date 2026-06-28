@@ -1,4 +1,51 @@
 {
+  "useTabs": false,
+  "tabWidth": 2,
   "singleQuote": true,
-  "trailingComma": "all"
+
+  "plugins": [
+    "prettier-plugin-tailwindcss",
+    "@trivago/prettier-plugin-sort-imports"
+  ],
+  "importOrder": [
+    "^react$",
+    "^@nestjs/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@apexafrica/(.*)$",
+    "^@/app/(.*)$",
+    "^@/features/(.*)$",
+    "^@/routes/(.*)$",
+    "^@/shared/assets/(.*)$",
+    "^@/shared/const/(.*)$",
+    "^@/shared/hooks/(.*)$",
+    "^@/shared/lib/(.*)$",
+    "^@/shared/schemas/(.*)$",
+    "^@/shared/types/(.*)$",
+    "^@/shared/ui/(.*)$",
+    "^@/shared/widgets/(.*)$",
+    "^@/services/(.*)$",
+    "^@/widgets/(.*)$",
+    "^@/types/(.*)$",
+    "^./app.(.*)$",
+    "^./gateway.(.*)$",
+    "^[./]",
+    "^[../]"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "importOrderParserPlugins": ["decorators-legacy", "typescript"]
+      }
+    },
+    {
+      "files": ["*.tsx"],
+      "options": {
+        "importOrderParserPlugins": ["jsx", "typescript"]
+      }
+    }
+  ]
 }

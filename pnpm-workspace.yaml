@@ -1,0 +1,6 @@
+packages:
+  - "apps/*"
+  - "libs/*"
+  - "web/*"
+
+nodeLinker: "isolated"
