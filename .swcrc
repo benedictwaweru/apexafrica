@@ -1,0 +1,21 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript",
+      "tsx": false,
+      "decorators": true
+    },
+    "transform": {
+      "legacyDecorator": true,
+      "decoratorMetadata": true,
+      "useDefineForClassFields": false
+    },
+    "loose": true,
+    "target": "es2022",
+    "externalHelpers": false
+  },
+  "module": {
+    "type": "commonjs",
+    "lazy": false
+  }
+}

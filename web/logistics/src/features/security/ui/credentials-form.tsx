@@ -161,7 +161,7 @@ export function CredentialsForm({ locale }: CredentialsFormProps) {
           {([canSubmit, isSubmitting]) => (
             <Field>
               <Button type="submit" disabled={!canSubmit || isSubmitting}>
-                {isSubmitting ? <Spinner className="size-6" /> : 'Log In'}
+                {isSubmitting ? <Spinner className="size-6" /> : 'Log in'}
               </Button>
             </Field>
           )}

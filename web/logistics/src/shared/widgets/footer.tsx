@@ -8,7 +8,7 @@ export function Footer() {
   return (
     <footer className="bg-background @container border-t py-12">
       <div className="mx-auto max-w-5xl px-6">
-        <div className="@md:grid-cols-3 @lg:grid-cols-6 grid grid-cols-2 gap-12">
+        <div className="grid grid-cols-2 gap-12 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           <div className="col-span-full">
             <Link to="/" className="flex items-center gap-2">
               <BlackLogo />

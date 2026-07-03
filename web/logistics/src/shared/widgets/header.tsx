@@ -53,7 +53,7 @@ export function Header() {
         </div>
 
         <NavigationMenu className="hidden lg:flex">
-          <NavigationMenuList>
+          <NavigationMenuList className="space-x-4">
             {navLinks.map((navLink) => (
               <NavigationMenuItem key={navLink.title}>
                 <NavigationMenuLink

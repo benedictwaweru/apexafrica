@@ -242,11 +242,11 @@ export function getSlug(title: string): string {
  */
 export function formatCount(count: number): string {
   const suffixes = [
-    { threshold: 1e15, suffix: 'Q+' },
-    { threshold: 1e12, suffix: 'T+' },
-    { threshold: 1e9, suffix: 'B+' },
-    { threshold: 1e6, suffix: 'M+' },
-    { threshold: 1e3, suffix: 'k+' },
+    { threshold: 1e15, suffix: 'Q' },
+    { threshold: 1e12, suffix: 'T' },
+    { threshold: 1e9, suffix: 'B' },
+    { threshold: 1e6, suffix: 'M' },
+    { threshold: 1e3, suffix: 'k' },
   ];
 
   for (const { threshold, suffix } of suffixes) {

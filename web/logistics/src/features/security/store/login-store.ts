@@ -1,9 +1,6 @@
 import { createStore } from '@tanstack/react-store';
 
-export type LoginStage =
-  | 'credentials' // Phase 1 — email + password form visible
-  | 'mfa' // Phase 2 — MFA dialog overlay visible
-  | 'authenticated'; // Terminal state — redirect / render app
+export type LoginStage = 'credentials' | 'mfa' | 'authenticated';
 
 export interface LoginState {
   stage: LoginStage;
@@ -48,7 +45,7 @@ export const loginActions = {
       stage: 'mfa',
       partialToken,
       email,
-      serverError: null, // always clear on transition
+      serverError: null,
     }));
   },
 

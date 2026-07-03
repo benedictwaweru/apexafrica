@@ -302,6 +302,4 @@ infra/pgadmin/pgpass
 
 certs/
 
-
-
 .nx/migrate-runs

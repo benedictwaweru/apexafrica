@@ -23,7 +23,7 @@ import {
 import { Spinner } from '@/shared/ui/spinner';
 
 import { verifyTOTP } from '../api/auth-api';
-import { mfaSchema, totpFieldSchema } from '../schemas/form-schema';
+import { mfaSchema } from '../schemas/form-schema';
 import { loginActions, loginStore } from '../store/login-store';
 
 interface OtpDialogProps {
@@ -54,8 +54,8 @@ export function OtpDialog({ locale }: OtpDialogProps) {
 
       try {
         await verifyTOTP(partialToken, value.code);
+
         loginActions.authenticate();
-        toast.success('Successfully signed in.');
       } catch (err) {
         toast.error(
           err instanceof Error
@@ -76,6 +76,14 @@ export function OtpDialog({ locale }: OtpDialogProps) {
       }}
     >
       <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Verify TOTP</DialogTitle>
+          <DialogDescription>
+            Enter the 6-digit code {email ? ` for ${email}` : ''} shown on your
+            authenticator app, such as Google or Microsoft Authenticator.
+          </DialogDescription>
+        </DialogHeader>
+
         <form
           className="flex flex-col space-y-4"
           onSubmit={(e) => {
@@ -85,15 +93,7 @@ export function OtpDialog({ locale }: OtpDialogProps) {
           }}
           noValidate
         >
-          <DialogHeader>
-            <DialogTitle>Verify TOTP</DialogTitle>
-            <DialogDescription>
-              Enter the 6-digit code {email ? ` for ${email}` : ''} shown on
-              your authenticator app, such as Google or Microsoft Authenticator.
-            </DialogDescription>
-          </DialogHeader>
-
-          <mFaForm.Field name="code" validators={{ onChange: totpFieldSchema }}>
+          <mFaForm.Field name="code">
             {(field) => {
               const {
                 state: {
@@ -119,6 +119,7 @@ export function OtpDialog({ locale }: OtpDialogProps) {
                     onChange={handleChange}
                     onBlur={handleBlur}
                     pattern={REGEXP_ONLY_DIGITS}
+                    className=""
                   >
                     <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
                       <InputOTPSlot
@@ -126,6 +127,9 @@ export function OtpDialog({ locale }: OtpDialogProps) {
                         className="border-primary"
                         index={0}
                       />
+                    </InputOTPGroup>
+                    <InputOTPSeparator className="mx-1" />
+                    <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
                       <InputOTPSlot
                         aria-invalid={isInvalid}
                         className="border-primary"
@@ -139,6 +143,9 @@ export function OtpDialog({ locale }: OtpDialogProps) {
                         className="border-primary"
                         index={2}
                       />
+                    </InputOTPGroup>
+                    <InputOTPSeparator className="mx-1" />
+                    <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
                       <InputOTPSlot
                         aria-invalid={isInvalid}
                         className="border-primary"
@@ -152,6 +159,9 @@ export function OtpDialog({ locale }: OtpDialogProps) {
                         className="border-primary"
                         index={4}
                       />
+                    </InputOTPGroup>
+                    <InputOTPSeparator className="mx-1" />
+                    <InputOTPGroup className="*:data-[slot=input-otp-slot]:h-12 *:data-[slot=input-otp-slot]:w-11 *:data-[slot=input-otp-slot]:text-xl">
                       <InputOTPSlot
                         aria-invalid={isInvalid}
                         className="border-primary"

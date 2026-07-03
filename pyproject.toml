@@ -1,0 +1,15 @@
+[project]
+name = "apexafrica"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = [
+    "cron/media",
+    "cron/analytics",
+    "python/bootstrap",
+]

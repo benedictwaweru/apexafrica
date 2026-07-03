@@ -19,6 +19,15 @@
         "tsConfigPath": "apps/apexafrica/tsconfig.app.json"
       }
     },
+    "logging": {
+      "type": "library",
+      "root": "libs/logging",
+      "entryFile": "index",
+      "sourceRoot": "libs/logging/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logging/tsconfig.lib.json"
+      }
+    },
     "logistics": {
       "type": "application",
       "root": "apps/logistics",

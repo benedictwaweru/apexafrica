@@ -1,0 +1,18 @@
+### Vault ###
+hvac
+
+### Data ###
+sqlalchemy 
+psycopg2-binary 
+redis 
+uuid6 
+faker
+
+### CLI ###
+typer
+
+### Concurrency ###
+asyncio
+
+### File Access ###
+pyyaml

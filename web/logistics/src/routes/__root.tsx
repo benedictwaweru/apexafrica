@@ -3,15 +3,24 @@ import {
   HeadContent,
   Outlet,
   createRootRouteWithContext,
+  redirect,
 } from '@tanstack/react-router';
+
+import { ThemeProvider } from '@/app/providers/theme-provider';
 
 import type { RouterContext } from '@/shared/types/types';
 
 import { Toaster } from '@/shared/ui/sonner';
 import { TooltipProvider } from '@/shared/ui/tooltip';
-import { ThemeProvider } from '@/app/providers/theme-provider';
 
 export const Route = createRootRouteWithContext<RouterContext>()({
+  beforeLoad: async ({ location }) => {
+    if (location.pathname === '/') {
+      throw redirect({ to: '/$locale', params: { locale: 'en-KE' } });
+    }
+
+    //await context.authenticationService.getCurrentUser();
+  },
   head: () => ({
     links: [
       {

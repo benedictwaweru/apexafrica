@@ -1,15 +1,15 @@
 {
   "name": "web-admin",
-  "root": "web/admin",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "web/admin/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{projectRoot}/{options.outDir}", "{projectRoot}/dist"],
+      "defaultConfiguration": "development",
       "options": {
-        "outputPath": "dist/web/admin",
-        "configFile": "web/admin/vite.config.ts"
+        "config": "./vite.config.ts",
+        "outDir": "../../dist/web/admin"
       },
       "configurations": {
         "development": {
@@ -18,51 +18,39 @@
         "production": {
           "mode": "production"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
-      "options": {
-        "buildTarget": "web-admin:build",
-        "hmr": true
-      },
+      "defaultConfiguration": "development",
       "configurations": {
-        "development": {
-          "buildTarget": "web-admin:build:development"
-        },
-        "production": {
-          "buildTarget": "web-admin:build:production",
-          "hmr": false
-        }
-      },
-      "defaultConfiguration": "development"
+        "development": {},
+        "production": {}
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "options": { "lintFilePatterns": ["web/admin/**/*.{ts,tsx}"] }
+      "options": {
+        "lintFilePatterns": ["web/admin/**/*.{ts,tsx}"]
+      }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "options": { "configFile": "web/admin/vite.config.ts" }
+      "options": {
+        "configFile": "web/admin/vite.config.ts"
+      }
     },
-
     "docker:build": {
       "executor": "@nx-tools/nx-container:build",
       "options": {
         "file": "web/admin/Dockerfile",
         "context": "{workspaceRoot}",
         "target": "dev",
-        "tags": [
-          "apexafrica/admin-webclient:latest"
-        ]
+        "tags": ["apexafrica/admin-webclient:latest"]
       },
       "configurations": {
         "production": {
           "target": "prod",
-          "tags": [
-            "apexafrica.azurecr.io/admin-webclient:latest"
-          ],
+          "tags": ["apexafrica.azurecr.io/admin-webclient:latest"],
           "push": true
         }
       }

@@ -5,7 +5,10 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
+import rootConfig from '../../eslint.config.js';
+
 export default defineConfig([
+  ...rootConfig,
   globalIgnores(['dist']),
   {
     files: ['**/*.{ts,tsx}'],

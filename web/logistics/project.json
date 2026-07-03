@@ -1,15 +1,15 @@
 {
   "name": "web-logistics",
-  "root": "web/logistics",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "web/logistics/src",
   "projectType": "application",
   "targets": {
     "build": {
-      "executor": "@nx/vite:build",
-      "outputs": ["{options.outputPath}"],
+      "outputs": ["{projectRoot}/{options.outDir}", "{projectRoot}/dist"],
+      "defaultConfiguration": "development",
       "options": {
-        "outputPath": "dist/web/logistics",
-        "configFile": "web/logistics/vite.config.ts"
+        "config": "./vite.config.ts",
+        "outDir": "../../dist/web/logistics"
       },
       "configurations": {
         "development": {
@@ -18,51 +18,39 @@
         "production": {
           "mode": "production"
         }
-      },
-      "defaultConfiguration": "development"
+      }
     },
     "serve": {
-      "executor": "@nx/vite:dev-server",
-      "options": {
-        "buildTarget": "web-logistics:build",
-        "hmr": true
-      },
+      "defaultConfiguration": "development",
       "configurations": {
-        "development": {
-          "buildTarget": "web-logistics:build:development"
-        },
-        "production": {
-          "buildTarget": "web-logistics:build:production",
-          "hmr": false
-        }
-      },
-      "defaultConfiguration": "development"
+        "development": {},
+        "production": {}
+      }
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "options": { "lintFilePatterns": ["web/logistics/**/*.{ts,tsx}"] }
+      "options": {
+        "lintFilePatterns": ["web/logistics/**/*.{ts,tsx}"]
+      }
     },
     "test": {
       "executor": "@nx/vite:test",
-      "options": { "configFile": "web/logistics/vite.config.ts" }
+      "options": {
+        "configFile": "web/logistics/vite.config.ts"
+      }
     },
-
     "docker:build": {
       "executor": "@nx-tools/nx-container:build",
       "options": {
         "file": "web/logistics/Dockerfile",
         "context": "{workspaceRoot}",
         "target": "dev",
-        "tags": [
-          "apexafrica/logistics-webclient:latest"
-        ]
+        "tags": ["apexafrica/logistics-webclient:latest"]
       },
       "configurations": {
         "production": {
           "target": "prod",
-          "tags": [
-            "apexafrica.azurecr.io/logistics-webclient:latest"
-          ],
+          "tags": ["apexafrica.azurecr.io/logistics-webclient:latest"],
           "push": true
         }
       }

@@ -1,21 +1,10 @@
 {
   "name": "keycloak",
-  "projectType": "application",
   "root": "infra/docker/keycloak",
+  "projectType": "application",
   "targets": {
     "docker:build": {
-      "executor": "@nx-tools/nx-container:build",
-      "options": {
-        "file": "infra/docker/keycloak/Dockerfile",
-        "context": "infra/docker/keycloak",
-        "tags": ["apexafrica/keycloak:latest"]
-      },
-      "configurations": {
-        "production": {
-          "tags": ["apexafrica.azurecr.io/keycloak:latest"],
-          "push": true
-        }
-      }
+      "args": ["--tag", "apexafrica/keycloak:latest"]
     }
   }
 }

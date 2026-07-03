@@ -1,0 +1,43 @@
+#
+# Apache APISIX 3.17.0 — config.yaml
+# Mode: "traditional" — single node acts as both control plane AND data plane.
+#       Perfect for local tinkering; use decoupled mode in production.
+#
+
+apisix:
+  node_listen: 9080
+  enable_ipv6: false
+
+deployment:
+  role: traditional
+  role_traditional:
+    config_provider: etcd
+
+  # etcd — must match the service name in docker-compose.yml
+  etcd:
+    host:
+      - "http://etcd:2379"
+    prefix: "/apisix"
+    timeout: 30
+
+  # Admin API (port 9180)
+  admin:
+    allow_admin:
+      - 0.0.0.0/0         # ⚠️  Fine for local dev; restrict to your IP in prod
+    admin_key_required: true
+    admin_key:
+      - name: admin
+        key: "edd1c9f034335f136f87ad84b625c8f1"   # ← change before going to prod
+        role: admin
+      - name: viewer
+        key: "4054f7cf07e344346cd3f287985e76a2"   # ← read-only key
+        role: viewer
+    https_admin: false
+
+# Prometheus metrics — exposed on :9091/apisix/prometheus/metrics
+plugin_attr:
+  prometheus:
+    export_uri: /apisix/prometheus/metrics
+    export_addr:
+      ip: "0.0.0.0"
+      port: 9091

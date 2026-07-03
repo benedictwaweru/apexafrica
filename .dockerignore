@@ -1,0 +1,70 @@
+### Version Control ###
+.git/
+.gitignore
+.gitattributes
+.git*
+
+### Tests ###
+test/
+tests/
+*.spec.ts
+*.test.ts
+e2e/
+*.e2e*
+/coverage
+/.nyc_output
+
+### Dependencies ###
+node_modules/
+myenv/
+venv/
+.venv/
+
+### Compiled Output ###
+dist/
+bin/
+build/
+
+### IDEs ###
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings
+
+### Logs ###
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+.gradle/
+
+### Environment variables ###
+.env
+.env.*
+*.local
+secrets.json
+application*.yml
+application*.properties
+
+### Cache ###
+.mvn
+.gradle
+
+var/cache/*
+var/log/*
+
+vendor/
+
+phpunit.xml
+phpunit.xml.dist
+
+### Tools and Infra ###
+contracts/
+k8s/
+scripts/
