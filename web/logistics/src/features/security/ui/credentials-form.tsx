@@ -1,5 +1,10 @@
 import { useForm } from '@tanstack/react-form';
 import { Link } from '@tanstack/react-router';
+import { toast } from 'sonner';
+
+import { useApiMutation } from '@/shared/lib/api';
+
+import type { ResponseType } from '@/shared/types/types';
 
 import { Button } from '@/shared/ui/button';
 import {
@@ -12,6 +17,8 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Spinner } from '@/shared/ui/spinner';
 
+import { PasswordInput } from '@/shared/widgets/password-input';
+
 import { checkCredentials } from '../api/auth-api';
 import {
   credentialsSchema,
@@ -19,14 +26,25 @@ import {
   passwordFieldSchema,
 } from '../schemas/form-schema';
 import { loginActions } from '../store/login-store';
-import { PasswordInput } from './password-input';
-import { toast } from 'sonner';
 
 interface CredentialsFormProps {
   locale: string;
 }
 
+type CredentialsCheckResponse = ResponseType & {
+  /** Whether the account has MFA enabled. */
+  requiresMFA: boolean;
+
+  /**
+   * Short-lived opaque token issued after successful credential verification.
+   * Only present when requiresMFA is true; sent back with the TOTP code.
+   */
+  partialToken?: string;
+};
+
 export function CredentialsForm({ locale }: CredentialsFormProps) {
+  const {} = useApiMutation<CredentialsCheckResponse>({ method: 'POST', url: '' });
+
   const credentialsForm = useForm({
     defaultValues: {
       email: '',
@@ -47,7 +65,7 @@ export function CredentialsForm({ locale }: CredentialsFormProps) {
           loginActions.requireMFA(result.partialToken, value.email);
         } else {
           loginActions.authenticate();
-          toast.success("Welcome back!");
+          toast.success('Welcome back!');
         }
       } catch (err) {
         toast.error(

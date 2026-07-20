@@ -55,6 +55,7 @@ export const loginActions = {
       ...prev,
       stage: 'authenticated',
       serverError: null,
+      partialToken: null,
     }));
   },
 

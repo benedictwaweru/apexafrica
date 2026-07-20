@@ -11,8 +11,6 @@ import { DynamicIcon } from 'lucide-react/dynamic';
 
 import { faqItems } from '@/shared/const/constants';
 
-//import { formatCount } from '@/shared/lib/helpers';
-
 import {
   Accordion,
   AccordionContent,
@@ -20,15 +18,6 @@ import {
   AccordionTrigger,
 } from '@/shared/ui/accordion';
 import { Button } from '@/shared/ui/button';
-/* import { QRCode } from '@/shared/ui/qr-code';
-
-import {
-  AppStoreButton,
-  GalaxyStoreButton,
-  GooglePlayButton,
-} from '@/shared/widgets/app-store-buttons';
-import { Iphone } from '@/shared/widgets/iphone';
-import { RatingBadge } from '@/shared/widgets/rating-badge'; */
 
 export const Route = createFileRoute('/$locale/_layout/')({
   component: Homepage,
@@ -283,15 +272,15 @@ function Homepage() {
             </p>
 
             <div className="mt-12 flex flex-wrap justify-center gap-4">
-              <Button asChild>
+              <Button asChild className="text-sm">
                 <Link to="/$locale/register" params={{ locale }}>
-                  <span>Get Started</span>
+                  Get Started
                 </Link>
               </Button>
 
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" className="text-sm">
                 <Link to="/$locale/login" params={{ locale }}>
-                  <span>Log in</span>
+                  Log in
                 </Link>
               </Button>
             </div>
