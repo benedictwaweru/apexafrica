@@ -42,6 +42,11 @@ import { Select, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { identifyCard, luhn } from '../libs/helpers';
 import { type Country, allCountries, getFlagUrl } from '../libs/i18n';
 import type { CardProvider } from '../types/types';
+import { TableUpload } from '@/shared/ui/file-upload';
+
+interface AccountSetupStepsProps {
+  group: any;
+}
 
 export function AccountTypeStep() {
   return (
@@ -244,6 +249,7 @@ export function CarrierDetailsStep() {
   return (
     <FieldSet>
       <FieldLegend>Carrier Details</FieldLegend>
+      <TableUpload />
     </FieldSet>
   );
 }
@@ -282,9 +288,11 @@ function CardLogo({ type }: { type: CardProvider }) {
       </>
     );
   }
+
   if (type === 'mastercard') {
     return <img src={MastercardLogo} alt="Mastercard" className="h-6" />;
   }
+
   if (type === 'amex') {
     return <img src={AmexLogo} alt="Amex" className="h-6" />;
   }
@@ -304,6 +312,7 @@ export function AddCardPaymentStep() {
   const cardType = identifyCard(raw);
   const expectedLength = cardType ? CARD_LENGTH[cardType] : 16;
   const isComplete = raw.length >= expectedLength;
+
   const isValid = isComplete && luhn(raw);
   const isInvalid = isComplete && !luhn(raw);
 

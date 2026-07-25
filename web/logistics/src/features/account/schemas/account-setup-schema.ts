@@ -14,13 +14,38 @@ export const personaSelectionSchema = z.object({
     .min(1, 'Please select at least one option'),
 });
 
-export const shipperDetailsSchema = z.object({});
+export const shipperDetailsSchema = z.object({
+  businessName: z.string().min(2, 'Business name is required'),
+  pickupAddress: z.string().min(5, 'Pickup address is required'),
+  monthlyShipmentVolume: z.enum(['1-10', '11-50', '51-200', '200+'], {
+    error: () => ({ message: 'Select an estimated shipment volume' }),
+  }),
+  preferredVehicleType: z.enum(['motorbike', 'van', 'truck', 'trailer'], {
+    error: () => ({ message: 'Select a preferred vehicle type' }),
+  }),
+});
 
-export const carrierDetailsSchema = z.object({});
+export const carrierDetailsSchema = z.object({
+  fleetSize: z.number().int().min(1, 'Fleet size must be at least 1'),
+  vehicleTypes: z
+    .array(z.enum(['motorbike', 'van', 'truck', 'trailer']))
+    .min(1, 'Select at least one vehicle type'),
+  drivingLicenseNumber: z.string().min(4, 'License number is required'),
+});
 
-export const warehouseOperatorDetailsSchema = z.object({});
+export const warehouseOperatorDetailsSchema = z.object({
+  warehouseName: z.string().min(2, 'Warehouse name is required'),
+  storageCapacitySqm: z.number().positive('Enter a valid capacity in sqm'),
+  location: z.string().min(3, 'Location is required'),
+  hasColdStorage: z.boolean(),
+});
 
-export const addMpesaPaymentSchema = z.object({});
+export const addMpesaPaymentSchema = z.object({
+  accountName: z.string().min(2, 'Name on M-Pesa account is required'),
+  phoneNumber: z
+    .string()
+    .regex(/^(?:\+254|0)7\d{8}$/, 'Enter a valid number'),
+});
 
 export const addCardPaymentSchema = z.object({
   cardName: z.string().min(2, 'Name on card is required'),
@@ -54,4 +79,4 @@ export const accountSetupSchema = z.object({
   step7: addCardPaymentSchema,
 });
 
-export type AccountSetupValues = z.infer<typeof accountSetupSchema>
+export type AccountSetupValues = z.infer<typeof accountSetupSchema>;

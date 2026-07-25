@@ -1,4 +1,54 @@
 services:
+  vault-data-init:
+    image: busybox:latest
+    user: root
+    volumes:
+      - vault_data:/vault/data
+      - vault_logs:/vault/logs
+      - vault_agent_sink:/vault/agent-sink
+    command: ["sh", "-c", "chown -R 100:100 /vault/data /vault/logs /vault/agent-sink"]
+
+  vault-server:
+    image: hashicorp/vault:2.0.3
+    container_name: vault-server
+    volumes:
+      - ./infra/vault-server/config:/vault/config:ro
+      - ./infra/vault-server/policies:/vault/policies:ro
+      - ./certs/vault-server:/vault/certs:ro
+      - vault_data:/vault/data
+      - vault_logs:/vault/logs
+    command: ["server"]
+    environment:
+      VAULT_ADDR: ${VAULT_ADDR}
+      VAULT_CACERT: ${VAULT_CACERT}
+    cap_add:
+      - IPC_LOCK
+    healthcheck:
+      test: ["CMD", "wget", "--no-check-certificate", "-qO-", "https://127.0.0.1:8200/v1/sys/health?standbyok=true&sealedcode=200"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    depends_on:
+      vault-data-init:
+        condition: service_completed_successfully
+    ports:
+      - "8200:8200"
+
+  vault-agent:
+    image: hashicorp/vault:2.0.3
+    container_name: vault-agent
+    restart: unless-stopped
+    depends_on:
+      vault-server:
+        condition: service_healthy
+    volumes:
+      - ./infra/vault-agent/config:/vault/config:ro
+      - ./certs/ca:/vault/certs:ro
+      - ./infra/vault-agent/templates:/vault/templates:ro
+      - vault_agent_sink:/vault/agent-sink
+    command: ["agent", "-config=/vault/config/agent.hcl"]
+
   postgres:
     image: postgres:18.3-bookworm
     container_name: postgres
@@ -165,6 +215,9 @@ volumes:
   keycloak_postgres_data:
   etcd_data:
   apisix_logs:
+  vault_data:
+  vault_logs:
+  vault_agent_sink:
 
 networks:
   apexafrica:

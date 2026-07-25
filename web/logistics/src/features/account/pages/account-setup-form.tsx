@@ -89,17 +89,24 @@ const STEP_CONFIG: StepConfig[] = [
 ];
 
 export function AccountSetupForm() {
-  const [step, setStep] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [paymentMethod, setPaymentMethod] = useState<'mpesa' | 'card'>('mpesa');
 
   const accountSetupForm = useAppForm({
     defaultValues: {
       step1: { accountType: undefined },
-      step2: {},
+      step2: { personae: [] },
       step3: {},
       step4: {},
       step5: {},
-      step6: {},
-      step7: {},
+      step6: { accountName: '', phoneNumber: '' },
+      step7: {
+        cardName: '',
+        cardNumber: '',
+        expiry: '',
+        cvv: '',
+        postalCode: '',
+      },
     },
   });
 
@@ -121,7 +128,7 @@ export function AccountSetupForm() {
 
         {/* <AddCardPaymentStep /> */}
         {/* <AccountTypeStep /> */}
-        <ShipperDetailsStep />
+        <CarrierDetailsStep />
 
         <div className="flex items-center justify-center space-x-4">
           <Button type="button" className="w-[50%]" variant="outline">

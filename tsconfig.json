@@ -19,13 +19,12 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "baseUrl": "./",
     "paths": {
       "@apexafrica/logging": [
-        "libs/logging/src"
+        "./libs/logging/src"
       ],
       "@apexafrica/logging/*": [
-        "libs/logging/src/*"
+        "./libs/logging/src/*"
       ]
     }
   }

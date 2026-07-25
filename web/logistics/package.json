@@ -18,6 +18,7 @@
     "@tanstack/react-router": "^1.170.16",
     "@tanstack/react-store": "^0.11.0",
     "@uidotdev/usehooks": "^2.4.1",
+    "@untitledui/file-icons": "^0.0.9",
     "axios": "^1.18.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
