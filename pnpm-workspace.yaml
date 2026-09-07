@@ -3,4 +3,14 @@ packages:
   - "libs/*"
   - "web/*"
 
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: true
+  less: true
+  msgpackr-extract: true
+  nx: true
+  unrs-resolver: true
+  workerd: true
+
 nodeLinker: "isolated"

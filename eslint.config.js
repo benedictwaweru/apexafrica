@@ -37,13 +37,9 @@ export default [
   },
   {
     // NestJS backend files (adjust paths to your repo layout)
-    files: [
-      'apps/apexproperties/src/**/*.ts',
-      'apps/gateway/src/**/*.ts',
-      'libs/**/src/**/*.ts',
-    ],
+    files: ['apps/**/src/**/*.ts', 'libs/**/src/**/*.ts'],
     // Allow type-only imports ONLY for pure type files
-    excludedFiles: ['**/*.dto.ts', '**/*.types.ts', '**/*.interface.ts'],
+    ignores: ['**/*.dto.ts', '**/*.types.ts', '**/*.interface.ts'],
     rules: {
       // Disable type-only enforcement so DI works at runtime
       '@typescript-eslint/consistent-type-imports': 'off',

@@ -1,0 +1,10 @@
+{
+  "name": "keycloak",
+  "root": "docker/keycloak",
+  "projectType": "application",
+  "targets": {
+    "docker:build": {
+      "args": ["--tag", "apexafrica/keycloak:latest"]
+    }
+  }
+}

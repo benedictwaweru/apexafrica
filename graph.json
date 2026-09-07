@@ -1,0 +1,1213 @@
+{
+  "graph": {
+    "nodes": {
+      "apexafrica": {
+        "name": "apexafrica",
+        "type": "app",
+        "data": {
+          "root": "apps/apexafrica",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "options": {
+                "lintFilePatterns": [
+                  "apps/apexafrica/**/*.ts"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "docker:build": {
+              "executor": "@nx-tools/nx-container:build",
+              "options": {
+                "file": "apps/apexafrica/Dockerfile",
+                "context": "",
+                "target": "dev",
+                "tags": [
+                  "apexafrica/gateway-service:latest"
+                ]
+              },
+              "configurations": {
+                "production": {
+                  "target": "prod",
+                  "tags": [
+                    "apexafrica.azurecr.io/gateway-service:latest"
+                  ],
+                  "push": true
+                }
+              },
+              "parallelism": true
+            },
+            "docker:run": {
+              "dependsOn": [
+                "docker:build"
+              ],
+              "inputs": [
+                "default",
+                "^default"
+              ],
+              "metadata": {
+                "technologies": [
+                  "docker"
+                ],
+                "description": "Run Docker run",
+                "help": {
+                  "command": "docker run --help",
+                  "example": {
+                    "options": {
+                      "args": [
+                        "-p",
+                        "3000:3000"
+                      ]
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/apexafrica",
+                "command": "docker run {args} apps-apexafrica"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/docker:release-publish",
+              "continuous": false,
+              "configurations": {},
+              "options": {},
+              "parallelism": true
+            },
+            "build": {
+              "executor": "@nx/webpack:webpack",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "development",
+              "options": {
+                "target": "node",
+                "compiler": "swc",
+                "outputPath": "dist/apps/apexafrica",
+                "main": "apps/apexafrica/src/main.ts",
+                "tsConfig": "apps/apexafrica/tsconfig.app.json",
+                "webpackConfig": "apps/apexafrica/webpack.config.js"
+              },
+              "configurations": {
+                "development": {
+                  "watch": true,
+                  "sourceMap": true
+                },
+                "production": {
+                  "optimization": true,
+                  "extractLicenses": true,
+                  "inspect": false
+                }
+              },
+              "parallelism": true
+            },
+            "serve": {
+              "executor": "@nx/js:node",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "apexafrica:build",
+                "watch": true,
+                "inspect": false
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "apexafrica:build:development"
+                },
+                "production": {
+                  "buildTarget": "apexafrica:build:production",
+                  "watch": false
+                }
+              },
+              "parallelism": true
+            },
+            "test": {
+              "executor": "@nx/jest:jest",
+              "options": {
+                "jestConfig": "apps/apexafrica/jest.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "metadata": {
+            "targetGroups": {
+              "Docker": [
+                "docker:build",
+                "docker:run",
+                "nx-release-publish"
+              ]
+            }
+          },
+          "name": "apexafrica",
+          "sourceRoot": "apps/apexafrica/src",
+          "projectType": "application",
+          "implicitDependencies": [],
+          "tags": []
+        }
+      },
+      "keycloak": {
+        "name": "keycloak",
+        "type": "app",
+        "data": {
+          "root": "docker/keycloak",
+          "metadata": {
+            "targetGroups": {
+              "Docker": [
+                "docker:build",
+                "docker:run",
+                "nx-release-publish"
+              ]
+            }
+          },
+          "targets": {
+            "docker:build": {
+              "dependsOn": [
+                "build",
+                "^build"
+              ],
+              "inputs": [
+                "default",
+                "^default"
+              ],
+              "metadata": {
+                "technologies": [
+                  "docker"
+                ],
+                "description": "Run Docker build",
+                "help": {
+                  "command": "docker build --help",
+                  "example": {
+                    "options": {
+                      "cache-from": "type=s3,region=eu-west-1,bucket=mybucket .",
+                      "cache-to": "type=s3,region=eu-west-1,bucket=mybucket ."
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "args": [
+                "--tag",
+                "apexafrica/keycloak:latest"
+              ],
+              "options": {
+                "cwd": "docker/keycloak",
+                "args": [
+                  "--label",
+                  "project=keycloak",
+                  "--tag",
+                  "apexafrica/keycloak:latest"
+                ],
+                "command": "docker build ."
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "docker:run": {
+              "dependsOn": [
+                "docker:build"
+              ],
+              "inputs": [
+                "default",
+                "^default"
+              ],
+              "metadata": {
+                "technologies": [
+                  "docker"
+                ],
+                "description": "Run Docker run",
+                "help": {
+                  "command": "docker run --help",
+                  "example": {
+                    "options": {
+                      "args": [
+                        "-p",
+                        "3000:3000"
+                      ]
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "docker/keycloak",
+                "command": "docker run {args} docker-keycloak"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/docker:release-publish",
+              "continuous": false,
+              "configurations": {},
+              "options": {},
+              "parallelism": true
+            }
+          },
+          "name": "keycloak",
+          "projectType": "application",
+          "implicitDependencies": [],
+          "tags": []
+        }
+      },
+      "logistics": {
+        "name": "logistics",
+        "type": "app",
+        "data": {
+          "root": "apps/logistics",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "options": {
+                "lintFilePatterns": [
+                  "apps/logistics/**/*.ts"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "docker:build": {
+              "executor": "@nx-tools/nx-container:build",
+              "options": {
+                "file": "apps/logistics/Dockerfile",
+                "context": "",
+                "target": "dev",
+                "tags": [
+                  "apexafrica/logistics-service:latest"
+                ]
+              },
+              "configurations": {
+                "production": {
+                  "target": "prod",
+                  "tags": [
+                    "apexafrica.azurecr.io/logistics-service:latest"
+                  ],
+                  "push": true
+                }
+              },
+              "parallelism": true
+            },
+            "docker:run": {
+              "dependsOn": [
+                "docker:build"
+              ],
+              "inputs": [
+                "default",
+                "^default"
+              ],
+              "metadata": {
+                "technologies": [
+                  "docker"
+                ],
+                "description": "Run Docker run",
+                "help": {
+                  "command": "docker run --help",
+                  "example": {
+                    "options": {
+                      "args": [
+                        "-p",
+                        "3000:3000"
+                      ]
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "apps/logistics",
+                "command": "docker run {args} apps-logistics"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "nx-release-publish": {
+              "executor": "@nx/docker:release-publish",
+              "continuous": false,
+              "configurations": {},
+              "options": {},
+              "parallelism": true
+            },
+            "build": {
+              "executor": "@nx/webpack:webpack",
+              "outputs": [
+                "{options.outputPath}"
+              ],
+              "defaultConfiguration": "development",
+              "options": {
+                "target": "node",
+                "compiler": "swc",
+                "outputPath": "dist/apps/logistics",
+                "main": "apps/logistics/src/main.ts",
+                "tsConfig": "apps/logistics/tsconfig.app.json",
+                "webpackConfig": "apps/logistics/webpack.config.js"
+              },
+              "configurations": {
+                "development": {
+                  "watch": true,
+                  "sourceMap": true
+                },
+                "production": {
+                  "optimization": true,
+                  "extractLicenses": true,
+                  "inspect": false
+                }
+              },
+              "parallelism": true
+            },
+            "serve": {
+              "executor": "@nx/js:node",
+              "defaultConfiguration": "development",
+              "options": {
+                "buildTarget": "logistics:build",
+                "watch": true,
+                "inspect": false
+              },
+              "configurations": {
+                "development": {
+                  "buildTarget": "logistics:build:development"
+                },
+                "production": {
+                  "buildTarget": "logistics:build:production",
+                  "watch": false
+                }
+              },
+              "parallelism": true
+            },
+            "test": {
+              "executor": "@nx/jest:jest",
+              "options": {
+                "jestConfig": "apps/logistics/jest.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            }
+          },
+          "metadata": {
+            "targetGroups": {
+              "Docker": [
+                "docker:build",
+                "docker:run",
+                "nx-release-publish"
+              ]
+            }
+          },
+          "name": "logistics",
+          "sourceRoot": "apps/logistics/src",
+          "projectType": "application",
+          "implicitDependencies": [],
+          "tags": []
+        }
+      },
+      "web-logistics": {
+        "name": "web-logistics",
+        "type": "app",
+        "data": {
+          "root": "web/logistics",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "options": {
+                "lintFilePatterns": [
+                  "web/logistics/**/*.{ts,tsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
+                "description": "Runs type-checking for the project.",
+                "help": {
+                  "command": "pnpm exec tsc -p tsconfig.app.json --help",
+                  "example": {
+                    "options": {
+                      "noEmit": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "tsc --noEmit -p tsconfig.app.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:build": {
+              "cache": true,
+              "dependsOn": [
+                "^vite:build"
+              ],
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "vite"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite build",
+                "help": {
+                  "command": "pnpm exec vite build --help",
+                  "example": {
+                    "options": {
+                      "sourcemap": true,
+                      "manifest": "manifest.json"
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "vite build"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:serve": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "deprecated": "Use devTargetName instead. This option will be removed in Nx 22."
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "vite"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:dev": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "vite"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:preview": {
+              "continuous": true,
+              "dependsOn": [
+                "vite:build"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Locally preview Vite production build",
+                "help": {
+                  "command": "pnpm exec vite preview --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "vite preview"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "serve-static": {
+              "continuous": true,
+              "executor": "@nx/web:file-server",
+              "options": {
+                "buildTarget": "build",
+                "spa": true
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "metadata": {
+                "description": "Runs type-checking for the project.",
+                "technologies": [
+                  "typescript"
+                ],
+                "help": {
+                  "command": "pnpm exec tsc -p tsconfig.app.json --help",
+                  "example": {
+                    "options": {
+                      "noEmit": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "tsc --noEmit -p tsconfig.app.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build-deps": {
+              "dependsOn": [
+                "^build"
+              ],
+              "configurations": {},
+              "options": {},
+              "parallelism": true,
+              "executor": "nx:noop"
+            },
+            "watch-deps": {
+              "continuous": true,
+              "dependsOn": [
+                "build-deps"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec nx watch --projects web-logistics --includeDependencies -- pnpm exec nx build-deps web-logistics"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite build",
+                "help": {
+                  "command": "pnpm exec vite build --help",
+                  "example": {
+                    "options": {
+                      "sourcemap": true,
+                      "manifest": "manifest.json"
+                    }
+                  }
+                },
+                "scriptContent": "tsc -b && nx vite:build",
+                "runCommand": "pnpm run build"
+              },
+              "outputs": [
+                "{projectRoot}/{options.outDir}",
+                "{projectRoot}/dist"
+              ],
+              "defaultConfiguration": "development",
+              "options": {
+                "script": "build",
+                "config": "./vite.config.ts",
+                "outDir": "../../dist/web/logistics"
+              },
+              "configurations": {
+                "development": {
+                  "mode": "development"
+                },
+                "production": {
+                  "mode": "production"
+                }
+              },
+              "parallelism": true
+            },
+            "serve": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "deprecated": "Use devTargetName instead. This option will be removed in Nx 22."
+              },
+              "executor": "nx:run-commands",
+              "defaultConfiguration": "development",
+              "options": {
+                "cwd": "web/logistics",
+                "command": "vite"
+              },
+              "configurations": {
+                "development": {},
+                "production": {}
+              },
+              "parallelism": true
+            },
+            "dev": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "scriptContent": "nx vite:serve",
+                "runCommand": "pnpm run dev"
+              },
+              "options": {
+                "script": "dev"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "preview": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Locally preview Vite production build",
+                "help": {
+                  "command": "pnpm exec vite preview --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "scriptContent": "nx vite:preview",
+                "runCommand": "pnpm run preview"
+              },
+              "options": {
+                "script": "preview"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "executor": "@nx/vite:test",
+              "options": {
+                "configFile": "web/logistics/vite.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "docker:build": {
+              "executor": "@nx-tools/nx-container:build",
+              "options": {
+                "file": "web/logistics/Dockerfile",
+                "context": "",
+                "target": "dev",
+                "tags": [
+                  "apexafrica/logistics-webclient:latest"
+                ]
+              },
+              "configurations": {
+                "production": {
+                  "target": "prod",
+                  "tags": [
+                    "apexafrica.azurecr.io/logistics-webclient:latest"
+                  ],
+                  "push": true
+                }
+              },
+              "parallelism": true
+            }
+          },
+          "projectType": "application",
+          "metadata": {
+            "targetGroups": {
+              "NPM Scripts": [
+                "dev",
+                "build",
+                "preview"
+              ]
+            },
+            "js": {
+              "packageName": "logistics",
+              "packageVersion": "0.0.0",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "name": "web-logistics",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "web/logistics/src",
+          "tags": [
+            "npm:private"
+          ],
+          "implicitDependencies": []
+        }
+      },
+      "web-admin": {
+        "name": "web-admin",
+        "type": "app",
+        "data": {
+          "root": "web/admin",
+          "targets": {
+            "lint": {
+              "executor": "@nx/eslint:lint",
+              "options": {
+                "lintFilePatterns": [
+                  "web/admin/**/*.{ts,tsx}"
+                ]
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "metadata": {
+                "technologies": [
+                  "typescript",
+                  "typescript"
+                ],
+                "description": "Runs type-checking for the project.",
+                "help": {
+                  "command": "pnpm exec tsc -p tsconfig.app.json --help",
+                  "example": {
+                    "options": {
+                      "noEmit": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "tsc --noEmit -p tsconfig.app.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:build": {
+              "cache": true,
+              "dependsOn": [
+                "^vite:build"
+              ],
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "vite"
+                  ]
+                }
+              ],
+              "outputs": [
+                "{projectRoot}/dist"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite build",
+                "help": {
+                  "command": "pnpm exec vite build --help",
+                  "example": {
+                    "options": {
+                      "sourcemap": true,
+                      "manifest": "manifest.json"
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "vite build"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:serve": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "deprecated": "Use devTargetName instead. This option will be removed in Nx 22."
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "vite"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:dev": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "vite"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:preview": {
+              "continuous": true,
+              "dependsOn": [
+                "vite:build"
+              ],
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Locally preview Vite production build",
+                "help": {
+                  "command": "pnpm exec vite preview --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "vite preview"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "serve-static": {
+              "continuous": true,
+              "executor": "@nx/web:file-server",
+              "options": {
+                "buildTarget": "build",
+                "spa": true
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "vite:typecheck": {
+              "cache": true,
+              "inputs": [
+                "default",
+                "^default",
+                {
+                  "externalDependencies": [
+                    "typescript"
+                  ]
+                }
+              ],
+              "metadata": {
+                "description": "Runs type-checking for the project.",
+                "technologies": [
+                  "typescript"
+                ],
+                "help": {
+                  "command": "pnpm exec tsc -p tsconfig.app.json --help",
+                  "example": {
+                    "options": {
+                      "noEmit": true
+                    }
+                  }
+                }
+              },
+              "executor": "nx:run-commands",
+              "options": {
+                "cwd": "web/admin",
+                "command": "tsc --noEmit -p tsconfig.app.json"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build-deps": {
+              "dependsOn": [
+                "^build"
+              ],
+              "configurations": {},
+              "options": {},
+              "parallelism": true,
+              "executor": "nx:noop"
+            },
+            "watch-deps": {
+              "continuous": true,
+              "dependsOn": [
+                "build-deps"
+              ],
+              "executor": "nx:run-commands",
+              "options": {
+                "command": "pnpm exec nx watch --projects web-admin --includeDependencies -- pnpm exec nx build-deps web-admin"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "build": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Run Vite build",
+                "help": {
+                  "command": "pnpm exec vite build --help",
+                  "example": {
+                    "options": {
+                      "sourcemap": true,
+                      "manifest": "manifest.json"
+                    }
+                  }
+                },
+                "scriptContent": "tsc -b && nx vite:build",
+                "runCommand": "pnpm run build"
+              },
+              "outputs": [
+                "{projectRoot}/{options.outDir}",
+                "{projectRoot}/dist"
+              ],
+              "defaultConfiguration": "development",
+              "options": {
+                "script": "build",
+                "config": "./vite.config.ts",
+                "outDir": "../../dist/web/admin"
+              },
+              "configurations": {
+                "development": {
+                  "mode": "development"
+                },
+                "production": {
+                  "mode": "production"
+                }
+              },
+              "parallelism": true
+            },
+            "serve": {
+              "continuous": true,
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "deprecated": "Use devTargetName instead. This option will be removed in Nx 22."
+              },
+              "executor": "nx:run-commands",
+              "defaultConfiguration": "development",
+              "options": {
+                "cwd": "web/admin",
+                "command": "vite"
+              },
+              "configurations": {
+                "development": {},
+                "production": {}
+              },
+              "parallelism": true
+            },
+            "dev": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Starts Vite dev server",
+                "help": {
+                  "command": "pnpm exec vite --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "scriptContent": "nx vite:serve",
+                "runCommand": "pnpm run dev"
+              },
+              "options": {
+                "script": "dev"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "preview": {
+              "executor": "nx:run-script",
+              "metadata": {
+                "technologies": [
+                  "vite"
+                ],
+                "description": "Locally preview Vite production build",
+                "help": {
+                  "command": "pnpm exec vite preview --help",
+                  "example": {
+                    "options": {
+                      "port": 3000
+                    }
+                  }
+                },
+                "scriptContent": "nx vite:preview",
+                "runCommand": "pnpm run preview"
+              },
+              "options": {
+                "script": "preview"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "test": {
+              "executor": "@nx/vite:test",
+              "options": {
+                "configFile": "web/admin/vite.config.ts"
+              },
+              "configurations": {},
+              "parallelism": true
+            },
+            "docker:build": {
+              "executor": "@nx-tools/nx-container:build",
+              "options": {
+                "file": "web/admin/Dockerfile",
+                "context": "",
+                "target": "dev",
+                "tags": [
+                  "apexafrica/admin-webclient:latest"
+                ]
+              },
+              "configurations": {
+                "production": {
+                  "target": "prod",
+                  "tags": [
+                    "apexafrica.azurecr.io/admin-webclient:latest"
+                  ],
+                  "push": true
+                }
+              },
+              "parallelism": true
+            }
+          },
+          "projectType": "application",
+          "metadata": {
+            "targetGroups": {
+              "NPM Scripts": [
+                "dev",
+                "build",
+                "preview"
+              ]
+            },
+            "js": {
+              "packageName": "admin",
+              "packageVersion": "0.0.0",
+              "isInPackageManagerWorkspaces": true
+            }
+          },
+          "name": "web-admin",
+          "$schema": "../../node_modules/nx/schemas/project-schema.json",
+          "sourceRoot": "web/admin/src",
+          "tags": [
+            "npm:private"
+          ],
+          "implicitDependencies": []
+        }
+      }
+    },
+    "dependencies": {
+      "apexafrica": [],
+      "keycloak": [],
+      "logistics": [],
+      "web-logistics": [],
+      "web-admin": []
+    }
+  }
+}

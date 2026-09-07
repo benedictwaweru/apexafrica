@@ -264,7 +264,7 @@ function Homepage() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="text-center">
             <h2 className="text-balance text-4xl font-semibold lg:text-5xl">
-              Ready to move freight smarter?
+              Ready to move or store freight smarter?
             </h2>
             <p className="mt-4">
               Join thousands of shippers and carriers already running on Apex

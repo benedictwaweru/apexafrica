@@ -13,5 +13,7 @@
     "packages/**/*.ts",
     "libs/**/*.ts",
     "libs/**/*.js",
+    "shared/**/*.ts",
+    "shared/**/*.js",
   ]
 }

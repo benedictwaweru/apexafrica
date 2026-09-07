@@ -6,7 +6,7 @@ import {
   Type,
 } from '@nestjs/common';
 
-import { LogSink } from './interfaces/log-interface';
+import { LogSink } from '../../nestlib/logging/src/nestlib/interfaces/log-interface';
 import { LoggingService } from './logging.service';
 import { SinksModule } from './sinks/sinks.module';
 import { SinksService } from './sinks/sinks.service';

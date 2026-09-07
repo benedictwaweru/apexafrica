@@ -11,5 +11,5 @@ package = false
 members = [
     "cron/media",
     "cron/analytics",
-    "python/bootstrap",
+    "tools/bootstrap",
 ]

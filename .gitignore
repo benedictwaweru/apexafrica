@@ -287,8 +287,9 @@ __marimo__/
 
 routes.yml
 
-!**/web/*/src/shared/lib
-!**/web/*/src/shared/lib/**
+!**/web/*/src/*/lib
+!**/web/*/src/lib
+!**/web/src/lib
 
 .nx/cache
 .nx/workspace-data

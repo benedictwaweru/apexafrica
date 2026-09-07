@@ -9,6 +9,10 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["node"],
+    "paths": {
+      "@apexafrica/database": ["./libs/database/src/index.ts"],
+      "web": ["./shared/web/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "dist"]
 }

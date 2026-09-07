@@ -26,6 +26,6 @@
       "@apexafrica/logging/*": [
         "./libs/logging/src/*"
       ]
-    }
+    },
   }
 }

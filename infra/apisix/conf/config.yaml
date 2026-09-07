@@ -5,8 +5,13 @@
 #
 
 apisix:
+  ssl_trusted_certificate: /usr/local/apisix/conf/certs/rootCA.pem
   node_listen: 9080
   enable_ipv6: false
+  ssl:
+    enable: true
+    listen:
+      - port: 443
 
 deployment:
   role: traditional

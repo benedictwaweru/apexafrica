@@ -10,9 +10,6 @@ import { JsonLogSinkService } from '@apexafrica/logging/sinks/json-log-sink/json
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { DpopModule } from './dpop/dpop.module';
-import { WebAuthnModule } from './web-authn/web-authn.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,9 +32,6 @@ import { WebAuthnModule } from './web-authn/web-authn.module';
     HttpModule.register({
       global: true,
     }),
-
-    WebAuthnModule,
-    DpopModule,
   ],
   controllers: [AppController],
   providers: [AppService],

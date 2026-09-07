@@ -1,6 +1,6 @@
 import { ConsoleLogger, Injectable, LogLevel } from '@nestjs/common';
 
-import { LogEntry } from './interfaces/log-interface';
+import { LogEntry } from '../../nestlib/logging/src/nestlib/interfaces/log-interface';
 import { SinksService } from './sinks/sinks.service';
 
 @Injectable()
@@ -63,6 +63,7 @@ export class LoggingService extends ConsoleLogger {
   private toEntryMessage(message: unknown): string {
     if (typeof message === 'string') return message;
     if (message instanceof Error) return message.message;
+
     try {
       return JSON.stringify(message);
     } catch {

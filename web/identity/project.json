@@ -1,0 +1,59 @@
+{
+  "name": "web-identity",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "web/identity/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "outputs": ["{projectRoot}/{options.outDir}", "{projectRoot}/dist"],
+      "defaultConfiguration": "development",
+      "options": {
+        "config": "./vite.config.ts",
+        "outDir": "../../dist/web/identity"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["web/identity/**/*.{ts,tsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "web/identity/vite.config.ts"
+      }
+    },
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "web/identity/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": ["apexafrica/identity-webclient:latest"]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": ["apexafrica.azurecr.io/identity-webclient:latest"],
+          "push": true
+        }
+      }
+    }
+  }
+}

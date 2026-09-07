@@ -1,0 +1,59 @@
+{
+  "name": "web-apexafrica",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "web/apexafrica/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "outputs": ["{projectRoot}/{options.outDir}", "{projectRoot}/dist"],
+      "defaultConfiguration": "development",
+      "options": {
+        "config": "./vite.config.ts",
+        "outDir": "../../dist/web/apexafrica"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["web/apexafrica/**/*.{ts,tsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "options": {
+        "configFile": "web/apexafrica/vite.config.ts"
+      }
+    },
+    "docker:build": {
+      "executor": "@nx-tools/nx-container:build",
+      "options": {
+        "file": "web/apexafrica/Dockerfile",
+        "context": "{workspaceRoot}",
+        "target": "dev",
+        "tags": ["apexafrica/apexafrica-webclient:latest"]
+      },
+      "configurations": {
+        "production": {
+          "target": "prod",
+          "tags": ["apexafrica.azurecr.io/apexafrica-webclient:latest"],
+          "push": true
+        }
+      }
+    }
+  }
+}
